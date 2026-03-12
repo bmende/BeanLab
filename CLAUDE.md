@@ -40,6 +40,29 @@ BeanServer/
 - `node-role.beanlab/media: "true"` → horseradish
 - `node-role.beanlab/streaming: "true"` → wasabi
 
+## Implementation Plan
+
+A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-03-09-beanlab-infra/`. Each phase has its own file (`phase_01.md` through `phase_07.md`) plus `test-requirements.md` mapping acceptance criteria to verification steps.
+
+**Phases:**
+1. Repository setup & node provisioning scripts
+2. Flux CD bootstrap
+3. Infrastructure — storage, NFS, cert-manager, Traefik
+4. Jellyfin deployment
+5. Media pipeline (MakeMKV + HandBrake)
+6. Home Assistant deployment
+7. beanJAMinBOT deployment
+
+**Key implementation details discovered during planning:**
+- **cert-manager ClusterIssuers** must be in a separate Flux Kustomization (`infrastructure/cert-manager-issuers/`) with `dependsOn: infrastructure`, because the ClusterIssuer CRD doesn't exist until cert-manager finishes installing
+- **Default branch is `master`**, not `main` — Flux bootstrap script defaults to `master`
+- **NFS PV** requires manual IP substitution (`<AGENT_NODE_IP>` placeholder) before deployment
+- **ClusterIssuer** requires manual email substitution (`<YOUR_EMAIL>` placeholder)
+- **`/dev/sr0`** (optical drive) is a `BlockDevice`, not `CharDevice`
+- **`nfs-common`** must be installed on the server node (wasabi) for NFS mounts — handled in `setup-server.sh`
+- **Provisioning scripts** use generic terms (server/agent), not node hostnames — configurable via env vars (`NODE_LABELS`, `MEDIA_DIR`, `K3S_TOKEN`, `K3S_URL`)
+- **Flux bootstrap** requires a GitHub PAT (Personal Access Token) with `repo` scope — one-time use, can be revoked after bootstrap creates its own deploy key
+
 ## Design Plan
 
 The full design plan with acceptance criteria and implementation phases is at `docs/design-plans/2026-03-09-beanlab-infra.md`.
