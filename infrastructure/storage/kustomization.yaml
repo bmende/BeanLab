@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - storageclass-local.yaml
   - pv-media-local.yaml
+  - pv-media-nfs.yaml
