@@ -1,0 +1,51 @@
+# NOTE: Replace <BOT_IMAGE> with the built image reference
+# (e.g., registry/beanjaminbot:latest or a local image name)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beanjaminbot
+  namespace: default
+  labels:
+    app: beanjaminbot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: beanjaminbot
+  template:
+    metadata:
+      labels:
+        app: beanjaminbot
+    spec:
+      nodeSelector:
+        node-role.beanlab/streaming: "true"
+      containers:
+        - name: beanjaminbot
+          image: <BOT_IMAGE>
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: data
+              mountPath: /app/data
+            - name: auth
+              mountPath: /app/config/botjamin_auth.yaml
+              subPath: botjamin_auth.yaml
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: beanjaminbot-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: beanjaminbot-data
+        - name: auth
+          secret:
+            secretName: beanjaminbot-auth
