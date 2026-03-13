@@ -92,6 +92,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 
 - `<AGENT_NODE_IP>` in `infrastructure/storage/pv-media-nfs.yaml`
 - `<YOUR_EMAIL>` in `infrastructure/cert-manager-issuers/clusterissuer.yaml`
+- `<YOUR_DOMAIN>` in `apps/jellyfin/ingress.yaml` (lines 13, 16) — replace with DDNS domain (e.g., jellyfin.example.com)
 - `<BOT_IMAGE>` in `apps/beanjaminbot/deployment.yaml`
 - `beanjaminbot-auth` secret must be created manually (see `apps/beanjaminbot/README-secrets.md`)
 

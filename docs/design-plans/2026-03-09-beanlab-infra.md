@@ -173,8 +173,7 @@ BeanServer/
 ├── infrastructure/
 │   ├── cert-manager/         # CRDs, ClusterIssuer for Let's Encrypt
 │   ├── traefik/              # Traefik config overrides
-│   ├── storage/              # StorageClasses, PVs for media
-│   └── nfs/                  # NFS server config
+│   └── storage/              # StorageClasses, PVs for media, NFS PV config
 ├── apps/
 │   ├── jellyfin/             # Deployment, PVC, Ingress, Service
 │   ├── homeassistant/        # Deployment, PVC, Ingress, Service
@@ -182,10 +181,12 @@ BeanServer/
 │   └── media-pipeline/       # MakeMKV + HandBrake deployments
 ├── scripts/
 │   ├── setup-server.sh       # wasabi: install k3s server, node labels
-│   └── setup-agent.sh        # horseradish: install k3s agent, labels, NFS, optical drive perms
+│   └── setup-agent.sh        # horseradish: install k3s agent, labels, NFS server setup, optical drive perms
 └── docs/
     └── design-plans/
 ```
+
+Note: NFS server configuration (exports, firewall rules) is handled by `scripts/setup-agent.sh` on the horseradish node. The NFS PersistentVolume definition lives in `infrastructure/storage/`.
 
 ## Existing Patterns
 
