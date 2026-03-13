@@ -232,8 +232,7 @@ The Flux monorepo structure follows the standard pattern from Flux CD documentat
 **Goal:** Set up cluster infrastructure: storage classes, NFS for cross-node media access, TLS certificate management, and Traefik ingress configuration.
 
 **Components:**
-- `infrastructure/storage/` — local StorageClass, PersistentVolume for `/srv/media/` on horseradish
-- `infrastructure/nfs/` — NFS server configuration exposing horseradish's media directory to the cluster
+- `infrastructure/storage/` — local StorageClass, PersistentVolume for `/srv/media/` on horseradish, NFS PersistentVolume config for cross-node media access
 - `infrastructure/cert-manager/` — cert-manager installation, ClusterIssuer for Let's Encrypt
 - `infrastructure/traefik/` — Traefik configuration overrides (ports, TLS defaults)
 
