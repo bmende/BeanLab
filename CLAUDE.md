@@ -22,6 +22,7 @@ BeanLab/
 ├── infrastructure/
 │   ├── cert-manager/             # HelmRelease, HelmRepo, Namespace
 │   ├── cert-manager-issuers/     # ClusterIssuer (separate layer, dependsOn: infrastructure)
+│   ├── headlamp/                 # Cluster dashboard (HelmRelease, NodePort)
 │   ├── storage/                  # Local PVs, NFS PV, StorageClass
 │   └── traefik/                  # HelmChartConfig for k3s-bundled Traefik
 ├── apps/
@@ -47,6 +48,7 @@ BeanLab/
 - **Secrets**: Manual `kubectl create secret` initially; SOPS is future upgrade path. beanJAMinBOT requires `beanjaminbot-auth` secret (see `apps/beanjaminbot/README-secrets.md`)
 - **beanJAMinBOT image**: Deployment uses `<BOT_IMAGE>` placeholder — must be replaced with actual registry/image reference
 - **MakeMKV security**: Requires `SYS_ADMIN` and `SYS_RAWIO` capabilities for optical drive ioctl/SCSI operations
+- **Headlamp** cluster dashboard deployed as Flux HelmRelease in `headlamp` namespace, accessible via NodePort on LAN
 - **All deployments** use `strategy: Recreate` (single-replica workloads with PVCs)
 - **Provisioning scripts** must be idempotent
 
@@ -82,6 +84,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 
 - **All app deployments live in `default` namespace** — no custom namespaces for apps
 - **cert-manager lives in `cert-manager` namespace** (defined in `infrastructure/cert-manager/namespace.yaml`)
+- **Headlamp lives in `headlamp` namespace** (defined in `infrastructure/headlamp/namespace.yaml`) — access via `http://<node-ip>:<nodeport>`, authenticate with `kubectl create token headlamp -n headlamp`
 - **Flux Kustomization dependency chain**: `apps` dependsOn `infrastructure`; `cert-manager-issuers` dependsOn `infrastructure`
 - **All Flux Kustomizations use `prune: true` and `wait: true`** with 10m reconciliation interval
 - **NFS export path**: `/srv/media` on agent node, exported with `rw,sync,no_subtree_check,no_root_squash`

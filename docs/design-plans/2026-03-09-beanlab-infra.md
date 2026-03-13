@@ -172,6 +172,7 @@ BeanServer/
 │   └── apps.yaml             # Kustomization pointing to apps/
 ├── infrastructure/
 │   ├── cert-manager/         # CRDs, ClusterIssuer for Let's Encrypt
+│   ├── headlamp/             # Cluster dashboard (HelmRelease, NodePort)
 │   ├── traefik/              # Traefik config overrides
 │   └── storage/              # StorageClasses, PVs for media, NFS PV config
 ├── apps/
