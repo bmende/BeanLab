@@ -74,7 +74,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 - **cert-manager ClusterIssuers** must be in a separate Flux Kustomization (`infrastructure/cert-manager-issuers/`) with `dependsOn: infrastructure`, because the ClusterIssuer CRD doesn't exist until cert-manager finishes installing
 - **Default branch is `master`**, not `main` — Flux bootstrap script defaults to `master`
 - **NFS PV** requires manual IP substitution (`<AGENT_NODE_IP>` placeholder) before deployment
-- **ClusterIssuer** requires manual email substitution (`<YOUR_EMAIL>` placeholder)
+- **ClusterIssuer** email field is omitted — Let's Encrypt no longer stores or uses contact emails (as of June 2025)
 - **`/dev/sr0`** (optical drive) is a `BlockDevice`, not `CharDevice`
 - **`nfs-common`** must be installed on the server node (wasabi) for NFS mounts — handled in `setup-server.sh`
 - **Provisioning scripts** use generic terms (server/agent), not node hostnames — configurable via env vars (`NODE_LABELS`, `MEDIA_DIR`, `K3S_TOKEN`, `K3S_URL`)
@@ -94,7 +94,6 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 ## Placeholders Requiring Manual Substitution Before Deployment
 
 - `<AGENT_NODE_IP>` in `infrastructure/storage/pv-media-nfs.yaml`
-- `<YOUR_EMAIL>` in `infrastructure/cert-manager-issuers/clusterissuer.yaml`
 - `<YOUR_DOMAIN>` in `apps/jellyfin/ingress.yaml` (lines 13, 16) — replace with DDNS domain (e.g., jellyfin.example.com)
 - `<BOT_IMAGE>` in `apps/beanjaminbot/deployment.yaml`
 - `beanjaminbot-auth` secret must be created manually (see `apps/beanjaminbot/README-secrets.md`)
