@@ -1,0 +1,18 @@
+# k3s
+*.kubeconfig
+
+# Editor
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets - never commit
+*.secret
+*.key
+
+# Local scratch files
+tmp/

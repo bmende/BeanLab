@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: makemkv
+  namespace: default
+  labels:
+    app: makemkv
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: makemkv
+  template:
+    metadata:
+      labels:
+        app: makemkv
+    spec:
+      nodeSelector:
+        node-role.beanlab/media: "true"
+      containers:
+        - name: makemkv
+          image: jlesage/makemkv:latest
+          ports:
+            - name: web-ui
+              containerPort: 5800
+              protocol: TCP
+          env:
+            - name: USER_ID
+              value: "1000"
+            - name: GROUP_ID
+              value: "1000"
+          securityContext:
+            capabilities:
+              add:
+                - SYS_ADMIN   # Required by MakeMKV for ioctl operations on the drive
+                - SYS_RAWIO   # Required for raw SCSI commands to the optical drive
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: output
+              mountPath: /output
+            - name: optical-drive
+              mountPath: /dev/sr0
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              memory: 4Gi
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: makemkv-config
+        - name: output
+          hostPath:
+            path: /srv/media/ripping
+            type: DirectoryOrCreate
+        - name: optical-drive
+          hostPath:
+            path: /dev/sr0
+            type: BlockDevice

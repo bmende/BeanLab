@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - makemkv-deployment.yaml
+  - makemkv-pvc.yaml
+  - makemkv-service.yaml
+  - handbrake-deployment.yaml
+  - handbrake-pvc-config.yaml
+  - handbrake-pvc-media.yaml
+  - handbrake-service.yaml
