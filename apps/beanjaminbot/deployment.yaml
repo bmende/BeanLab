@@ -1,5 +1,3 @@
-# NOTE: Replace <BOT_IMAGE> with the built image reference
-# (e.g., registry/beanjaminbot:latest or a local image name)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +21,7 @@ spec:
         node-role.beanlab/streaming: "true"
       containers:
         - name: beanjaminbot
-          image: <BOT_IMAGE>
+          image: ${BOT_IMAGE}
           volumeMounts:
             - name: config
               mountPath: /app/config

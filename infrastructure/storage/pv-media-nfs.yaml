@@ -1,4 +1,3 @@
-# Replace <AGENT_NODE_IP> with the agent node's LAN IP address
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -11,6 +10,6 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-media
   nfs:
-    server: <AGENT_NODE_IP>
+    server: ${AGENT_NODE_IP}
     path: /srv/media
     readOnly: false

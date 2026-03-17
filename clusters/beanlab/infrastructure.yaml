@@ -11,3 +11,7 @@ spec:
   path: ./infrastructure
   prune: true
   wait: true
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: beanlab-config

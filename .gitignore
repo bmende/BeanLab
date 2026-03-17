@@ -13,6 +13,8 @@ Thumbs.db
 # Secrets - never commit
 *.secret
 *.key
+.env
+.env.*
 
 # Local scratch files
 tmp/

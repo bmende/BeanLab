@@ -91,11 +91,24 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 - **Media directory layout**: `/srv/media/library` (finished media) and `/srv/media/ripping` (MakeMKV output)
 - **Script env vars**: `setup-server.sh` requires `K3S_TOKEN`; `setup-agent.sh` requires `K3S_URL` + `K3S_TOKEN`; `bootstrap-flux.sh` requires `GITHUB_USER` + `GITHUB_TOKEN`
 
-## Placeholders Requiring Manual Substitution Before Deployment
+## Flux Variable Substitution
 
-- `<AGENT_NODE_IP>` in `infrastructure/storage/pv-media-nfs.yaml`
-- `<YOUR_DOMAIN>` in `apps/jellyfin/ingress.yaml` (lines 13, 16) — replace with DDNS domain (e.g., jellyfin.example.com)
-- `<BOT_IMAGE>` in `apps/beanjaminbot/deployment.yaml`
+Sensitive values are **not committed to git**. Instead, manifests use `${VAR_NAME}` placeholders that Flux substitutes at reconciliation time from a `beanlab-config` ConfigMap in the cluster.
+
+**Variables** (defined in `beanlab-config` ConfigMap in `flux-system` namespace):
+- `AGENT_NODE_IP` — agent node LAN IP (used in `infrastructure/storage/pv-media-nfs.yaml`)
+- `JELLYFIN_DOMAIN` — DDNS domain for Jellyfin ingress (used in `apps/jellyfin/ingress.yaml`)
+- `BOT_IMAGE` — container image reference for beanJAMinBOT (used in `apps/beanjaminbot/deployment.yaml`)
+
+**Create the ConfigMap after cluster bootstrap:**
+```bash
+kubectl -n flux-system create configmap beanlab-config \
+  --from-literal=AGENT_NODE_IP=192.168.x.x \
+  --from-literal=JELLYFIN_DOMAIN=jellyfin.example.com \
+  --from-literal=BOT_IMAGE=registry/beanjaminbot:latest
+```
+
+**Additional manual secrets:**
 - `beanjaminbot-auth` secret must be created manually (see `apps/beanjaminbot/README-secrets.md`)
 
 ## Design Plan
