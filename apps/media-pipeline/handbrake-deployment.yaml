@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: handbrake
+  namespace: default
+  labels:
+    app: handbrake
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: handbrake
+  template:
+    metadata:
+      labels:
+        app: handbrake
+    spec:
+      nodeSelector:
+        node-role.beanlab/streaming: "true"
+      containers:
+        - name: handbrake
+          image: jlesage/handbrake:latest
+          ports:
+            - name: web-ui
+              containerPort: 5800
+              protocol: TCP
+          env:
+            - name: USER_ID
+              value: "1000"
+            - name: GROUP_ID
+              value: "1000"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /storage
+              subPath: ripping
+            - name: media
+              mountPath: /output
+              subPath: library
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+            limits:
+              memory: 4Gi
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: handbrake-config
+        - name: media
+          persistentVolumeClaim:
+            claimName: handbrake-media

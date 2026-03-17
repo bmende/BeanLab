@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: headlamp
+  namespace: headlamp
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: headlamp
+      version: "*"
+      sourceRef:
+        kind: HelmRepository
+        name: headlamp
+        namespace: flux-system
+  values:
+    replicaCount: 1
+    service:
+      type: NodePort
+    clusterRoleBinding:
+      create: true
+      clusterRoleName: cluster-admin
