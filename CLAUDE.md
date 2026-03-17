@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BeanLab is a home lab Kubernetes (k3s) cluster managed via GitOps. Two physical nodes — **wasabi** (server/control plane, i5 13th gen, 64GB RAM, NVIDIA 1650 Super) and **horseradish** (agent, i7 4th gen, 32GB RAM, DVD drive, ~1TB SSD for media) — run four self-hosted services: Jellyfin, a media ripping pipeline (MakeMKV + HandBrake), Home Assistant, and beanJAMinBOT.
+BeanLab is a home lab Kubernetes (k3s) cluster managed via GitOps. Two physical nodes — **wasabi** (server/control plane, i5 13th gen, 64GB RAM, NVIDIA 1650 Super) and **horseradish** (agent, i7 4th gen, 16GB RAM, DVD drive, ~1TB SSD for media) — run four self-hosted services: Jellyfin, a media ripping pipeline (MakeMKV + HandBrake), Home Assistant, and beanJAMinBOT.
 
 All deployments are managed by **Flux CD** watching the `master` branch. No `kubectl apply` — push YAML to git and Flux reconciles.
 
