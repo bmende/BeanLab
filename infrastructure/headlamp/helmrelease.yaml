@@ -8,13 +8,14 @@ spec:
   chart:
     spec:
       chart: headlamp
-      version: "*"
+      version: "0.40.x"
       sourceRef:
         kind: HelmRepository
         name: headlamp
         namespace: flux-system
   values:
     replicaCount: 1
+    sessionTTL: ""
     service:
       type: NodePort
     clusterRoleBinding:
