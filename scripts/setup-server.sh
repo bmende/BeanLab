@@ -17,8 +17,11 @@ sudo apt-get update -qq
 sudo apt-get install -y -qq nfs-common
 
 # --- Install k3s server ------------------------------------------------------
+# Unset K3S_URL to prevent the installer from treating this node as an agent
+unset K3S_URL
+
 echo "Installing k3s server..."
-curl -sfL https://get.k3s.io | K3S_TOKEN="$K3S_TOKEN" sh -s - \
+curl -sfL https://get.k3s.io | K3S_TOKEN="$K3S_TOKEN" sh -s - server \
     --write-kubeconfig-mode 644 \
     --node-label "$NODE_LABELS"
 
