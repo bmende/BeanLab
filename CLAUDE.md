@@ -8,6 +8,8 @@ BeanLab is a home lab Kubernetes (k3s) cluster managed via GitOps. Two physical 
 
 All deployments are managed by **Flux CD** watching the `master` branch. No `kubectl apply` — push YAML to git and Flux reconciles.
 
+**The `master` branch has branch protections on GitHub.** All changes must go through a PR — never commit directly to `master`.
+
 ## Architecture
 
 ### Repo Structure
