@@ -22,8 +22,8 @@ FLUX_PATH="${FLUX_PATH:-clusters/beanlab}"
 echo "Checking prerequisites..."
 
 if ! command -v flux &>/dev/null; then
-    echo "Error: flux CLI not found. Install with: curl -s https://fluxcd.io/install.sh | sudo bash"
-    exit 1
+    echo "Installing Flux CLI..."
+    curl -s https://fluxcd.io/install.sh | sudo bash
 fi
 
 if ! kubectl cluster-info &>/dev/null; then

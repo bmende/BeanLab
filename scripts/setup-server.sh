@@ -25,6 +25,11 @@ curl -sfL https://get.k3s.io | K3S_TOKEN="$K3S_TOKEN" sh -s - server \
     --write-kubeconfig-mode 644 \
     --node-label "$NODE_LABELS"
 
+# --- Copy kubeconfig to default location --------------------------------------
+echo "Setting up kubeconfig..."
+mkdir -p "$HOME/.kube"
+cp /etc/rancher/k3s/k3s.yaml "$HOME/.kube/config"
+
 # --- Wait for node to be ready -----------------------------------------------
 echo "Waiting for k3s to be ready..."
 until sudo k3s kubectl get nodes &>/dev/null; do
