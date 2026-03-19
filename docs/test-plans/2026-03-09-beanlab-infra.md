@@ -52,7 +52,7 @@
 | Step | Action | Expected |
 |------|--------|----------|
 | 4.1 | Run `kubectl get pod -l app=makemkv -o wide` | Pod is Running, NODE column shows horseradish |
-| 4.2 | Run `kubectl exec -it <makemkv-pod> -- ls -la /dev/sr0` | `/dev/sr0` exists as a block device inside the container |
+| 4.2 | Run `kubectl exec -it <makemkv-pod> -- ls -la /dev/sr0 /dev/sg0` | `/dev/sr0` exists as a block device and `/dev/sg0` as a char device inside the container |
 | 4.3 | Open browser to `http://<horseradish-ip>:<makemkv-nodeport>` | MakeMKV web UI loads |
 | 4.4 | Insert a disc. In MakeMKV UI, select the drive and start a rip | Ripping begins; progress visible in UI |
 | 4.5 | After rip completes, on horseradish run `ls /srv/media/ripping/` | Ripped `.mkv` files appear |
@@ -122,7 +122,7 @@
 | AC3.3 New media detected | — | Steps 3.4-3.5 |
 | AC3.4 External HTTPS access | Ingress has `letsencrypt-prod` | Step 3.6 |
 | AC3.5 Config persists | — | Step 3.7 |
-| AC4.1 MakeMKV on agent with drive | BlockDevice + SYS_ADMIN/SYS_RAWIO | Steps 4.1-4.2 |
+| AC4.1 MakeMKV on agent with drive | Privileged mode + /dev/sr0 + /dev/sg0 | Steps 4.1-4.2 |
 | AC4.2 MakeMKV web UI | — | Step 4.3 |
 | AC4.3 Rip to ripping dir | — | Steps 4.4-4.5 |
 | AC4.4 HandBrake on server with NFS | NFS PVC + subPaths | Steps 4.6-4.7 |

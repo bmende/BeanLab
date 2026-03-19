@@ -51,14 +51,14 @@
 
 | AC | Verification | Type |
 |----|-------------|------|
-| AC4.1 | `kubectl get pod -l app=makemkv -o wide` — runs on agent node. `kubectl exec` into pod, verify `/dev/sr0` exists | Manual (on cluster) |
+| AC4.1 | `kubectl get pod -l app=makemkv -o wide` — runs on agent node. `kubectl exec` into pod, verify `/dev/sr0` and `/dev/sg0` exist | Manual (on cluster) |
 | AC4.2 | Access MakeMKV web UI via `http://<agent-node-ip>:<nodeport>` | Manual (browser) |
 | AC4.3 | Insert a disc, rip via MakeMKV UI. On agent node: `ls /srv/media/ripping/` — verify ripped files appear | Manual (on hardware + browser) |
 | AC4.4 | `kubectl get pod -l app=handbrake -o wide` — runs on server node. `kubectl exec` into pod, verify `/storage` (NFS) is readable | Manual (on cluster) |
 | AC4.5 | Encode a file via HandBrake UI (input from `/storage`, output to `/output`). On agent node: `ls /srv/media/library/` — verify encoded file appears | Manual (on hardware + browser) |
 | AC4.6 | Access HandBrake web UI via `http://<server-node-ip>:<nodeport>` | Manual (browser) |
 
-**Pre-deploy verification:** Validate manifests: MakeMKV has BlockDevice hostPath for `/dev/sr0`, SYS_ADMIN + SYS_RAWIO capabilities; HandBrake has NFS PVC with subPaths `ripping` and `library`
+**Pre-deploy verification:** Validate manifests: MakeMKV runs in privileged mode with BlockDevice hostPath for `/dev/sr0` and CharDevice hostPath for `/dev/sg0`; HandBrake has NFS PVC with subPaths `ripping` and `library`
 
 ---
 

@@ -49,7 +49,7 @@ BeanLab/
 - **Home Assistant** uses `hostNetwork: true` + `dnsPolicy: ClusterFirstWithHostNet` for mDNS device discovery
 - **Secrets**: Manual `kubectl create secret` initially; SOPS is future upgrade path. beanJAMinBOT requires `beanjaminbot-auth` secret (see `apps/beanjaminbot/README-secrets.md`)
 - **beanJAMinBOT image**: Deployment uses `<BOT_IMAGE>` placeholder — must be replaced with actual registry/image reference
-- **MakeMKV security**: Requires `SYS_ADMIN` and `SYS_RAWIO` capabilities for optical drive ioctl/SCSI operations
+- **MakeMKV security**: Runs in `privileged` mode — required for SCSI subsystem access to the optical drive. Individual capabilities (`SYS_ADMIN`, `SYS_RAWIO`) were insufficient. Both `/dev/sr0` (block device) and `/dev/sg0` (SCSI generic) are passed through
 - **Headlamp** cluster dashboard deployed as Flux HelmRelease in `headlamp` namespace, accessible via NodePort on LAN
 - **All deployments** use `strategy: Recreate` (single-replica workloads with PVCs)
 - **Provisioning scripts** must be idempotent
@@ -77,7 +77,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 - **Default branch is `master`**, not `main` — Flux bootstrap script defaults to `master`
 - **NFS PV** requires manual IP substitution (`<AGENT_NODE_IP>` placeholder) before deployment
 - **ClusterIssuer** email field is omitted — Let's Encrypt no longer stores or uses contact emails (as of June 2025)
-- **`/dev/sr0`** (optical drive) is a `BlockDevice`, not `CharDevice`
+- **`/dev/sr0`** (optical drive) is a `BlockDevice`; **`/dev/sg0`** (SCSI generic) is a `CharDevice` — both required for MakeMKV
 - **`nfs-common`** must be installed on the server node (wasabi) for NFS mounts — handled in `setup-server.sh`
 - **Provisioning scripts** use generic terms (server/agent), not node hostnames — configurable via env vars (`NODE_LABELS`, `MEDIA_DIR`, `K3S_TOKEN`, `K3S_URL`)
 - **Flux bootstrap** requires a GitHub PAT (Personal Access Token) with `repo` scope — one-time use, can be revoked after bootstrap creates its own deploy key
