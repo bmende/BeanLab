@@ -43,6 +43,8 @@ spec:
               mountPath: /output
             - name: optical-drive
               mountPath: /dev/sr0
+            - name: scsi-generic
+              mountPath: /dev/sg0
           resources:
             requests:
               cpu: 500m
@@ -61,3 +63,7 @@ spec:
           hostPath:
             path: /dev/sr0
             type: BlockDevice
+        - name: scsi-generic
+          hostPath:
+            path: /dev/sg0
+            type: CharDevice
