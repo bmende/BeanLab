@@ -32,10 +32,7 @@ spec:
             - name: GROUP_ID
               value: "1000"
           securityContext:
-            capabilities:
-              add:
-                - SYS_ADMIN   # Required by MakeMKV for ioctl operations on the drive
-                - SYS_RAWIO   # Required for raw SCSI commands to the optical drive
+            privileged: true  # Required for MakeMKV to access optical drive SCSI subsystem
           volumeMounts:
             - name: config
               mountPath: /config
