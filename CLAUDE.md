@@ -24,6 +24,7 @@ BeanLab/
 ├── infrastructure/
 │   ├── cert-manager/             # HelmRelease, HelmRepo, Namespace
 │   ├── cert-manager-issuers/     # ClusterIssuer (separate layer, dependsOn: infrastructure)
+│   ├── coredns-lan/              # LAN DNS server (CoreDNS, hostPort 53, wasabi)
 │   ├── headlamp/                 # Cluster dashboard (HelmRelease, NodePort)
 │   ├── storage/                  # Local PVs, NFS PV, StorageClass
 │   └── traefik/                  # HelmChartConfig for k3s-bundled Traefik
@@ -51,6 +52,7 @@ BeanLab/
 - **beanJAMinBOT image**: Deployment uses `<BOT_IMAGE>` placeholder — must be replaced with actual registry/image reference
 - **MakeMKV security**: Requires `SYS_ADMIN` and `SYS_RAWIO` capabilities for optical drive ioctl/SCSI operations
 - **Headlamp** cluster dashboard deployed as Flux HelmRelease in `headlamp` namespace, accessible via NodePort on LAN
+- **CoreDNS LAN** authoritative DNS server for LAN zones, deployed in `dns` namespace on wasabi via `hostPort: 53`; zone files are read from `/etc/coredns-lan/zones` on the host (auto-reloaded every 10s); forwards non-local queries to `8.8.8.8`/`8.8.4.4`
 - **All deployments** use `strategy: Recreate` (single-replica workloads with PVCs)
 - **Provisioning scripts** must be idempotent
 
@@ -87,6 +89,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 - **All app deployments live in `default` namespace** — no custom namespaces for apps
 - **cert-manager lives in `cert-manager` namespace** (defined in `infrastructure/cert-manager/namespace.yaml`)
 - **Headlamp lives in `headlamp` namespace** (defined in `infrastructure/headlamp/namespace.yaml`) — access via `http://<node-ip>:<nodeport>`, authenticate with `kubectl create token headlamp -n headlamp`
+- **CoreDNS LAN lives in `dns` namespace** (defined in `infrastructure/coredns-lan/namespace.yaml`) — uses `hostPort: 53` on wasabi; zone files must be placed in `/etc/coredns-lan/zones/` on the host as standard BIND-format zone files named `db.<zone>`
 - **Flux Kustomization dependency chain**: `apps` dependsOn `infrastructure`; `cert-manager-issuers` dependsOn `infrastructure`
 - **All Flux Kustomizations use `prune: true` and `wait: true`** with 10m reconciliation interval
 - **NFS export path**: `/srv/media` on agent node, exported with `rw,sync,no_subtree_check,no_root_squash`
@@ -117,4 +120,4 @@ kubectl -n flux-system create configmap beanlab-config \
 
 The full design plan with acceptance criteria and implementation phases is at `docs/design-plans/2026-03-09-beanlab-infra.md`.
 
-<!-- Freshness: 2026-03-12 -->
+<!-- Freshness: 2026-03-20 -->
