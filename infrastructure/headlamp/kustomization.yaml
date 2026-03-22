@@ -5,3 +5,4 @@ resources:
   - helmrepo.yaml
   - helmrelease.yaml
   - admin-token.yaml
+  - ingress.yaml

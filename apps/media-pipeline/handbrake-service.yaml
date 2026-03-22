@@ -11,4 +11,4 @@ spec:
       port: 5800
       targetPort: web-ui
       protocol: TCP
-  type: NodePort
+  type: ClusterIP

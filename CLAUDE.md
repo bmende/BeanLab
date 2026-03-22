@@ -88,7 +88,7 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 
 - **All app deployments live in `default` namespace** — no custom namespaces for apps
 - **cert-manager lives in `cert-manager` namespace** (defined in `infrastructure/cert-manager/namespace.yaml`)
-- **Headlamp lives in `headlamp` namespace** (defined in `infrastructure/headlamp/namespace.yaml`) — access via `http://<node-ip>:<nodeport>`, authenticate with `kubectl create token headlamp -n headlamp`
+- **Headlamp lives in `headlamp` namespace** (defined in `infrastructure/headlamp/namespace.yaml`) — access via Ingress (`${HEADLAMP_DOMAIN}`), authenticate with `kubectl create token headlamp -n headlamp`
 - **CoreDNS LAN lives in `dns` namespace** (defined in `infrastructure/coredns-lan/namespace.yaml`) — uses `hostPort: 53` on wasabi; zone files must be placed in `/etc/coredns-lan/zones/` on the host as standard BIND-format zone files named `db.<zone>`
 - **Flux Kustomization dependency chain**: `apps` dependsOn `infrastructure`; `cert-manager-issuers` dependsOn `infrastructure`
 - **All Flux Kustomizations use `prune: true` and `wait: true`** with 10m reconciliation interval
@@ -98,19 +98,13 @@ A detailed 7-phase implementation plan lives at `docs/implementation-plans/2026-
 
 ## Flux Variable Substitution
 
-Sensitive values are **not committed to git**. Instead, manifests use `${VAR_NAME}` placeholders that Flux substitutes at reconciliation time from a `beanlab-config` ConfigMap in the cluster.
+Configurable values are **not committed to git**. Instead, manifests use `${VAR_NAME}` placeholders that Flux substitutes at reconciliation time from a `beanlab-config` ConfigMap in the cluster.
 
-**Variables** (defined in `beanlab-config` ConfigMap in `flux-system` namespace):
-- `AGENT_NODE_IP` — agent node LAN IP (used in `infrastructure/storage/pv-media-nfs.yaml`)
-- `JELLYFIN_DOMAIN` — DDNS domain for Jellyfin ingress (used in `apps/jellyfin/ingress.yaml`)
-- `BOT_IMAGE` — container image reference for beanJAMinBOT (used in `apps/beanjaminbot/deployment.yaml`)
+**Variables** are defined in `config.env` (gitignored) in the project root. Each variable documents which manifest uses it. Edit that file, then apply:
 
-**Create the ConfigMap after cluster bootstrap:**
 ```bash
 kubectl -n flux-system create configmap beanlab-config \
-  --from-literal=AGENT_NODE_IP=192.168.x.x \
-  --from-literal=JELLYFIN_DOMAIN=jellyfin.example.com \
-  --from-literal=BOT_IMAGE=registry/beanjaminbot:latest
+  --from-env-file=config.env --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 **Additional manual secrets:**

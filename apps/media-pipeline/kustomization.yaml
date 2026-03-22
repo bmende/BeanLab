@@ -8,3 +8,5 @@ resources:
   - handbrake-pvc-config.yaml
   - handbrake-pvc-media.yaml
   - handbrake-service.yaml
+  - makemkv-ingress.yaml
+  - handbrake-ingress.yaml
